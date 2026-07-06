@@ -1,0 +1,53 @@
+// Thanh filter nối tiếp breadcrumb, trước navigation-bar
+.sitetor-cat-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  margin: 4px 0 8px;
+  background: var(--primary-very-low);
+  border: 1px solid var(--primary-low);
+  border-radius: 8px;
+
+  .scf-select {
+    margin: 0;
+    padding: 4px 8px;
+    max-width: 160px;
+    background: var(--secondary);
+    border: 1px solid var(--primary-low-mid);
+    border-radius: 4px;
+  }
+
+  .scf-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    label {
+      margin: 0 2px 0 0;
+      font-weight: 600;
+      font-size: var(--font-down-1);
+      color: var(--primary-high);
+      white-space: nowrap;
+    }
+
+    input[type="number"] {
+      width: 72px;
+      margin: 0;
+      padding: 4px 6px;
+    }
+  }
+
+  .scf-btn {
+    padding: 4px 12px;
+  }
+}
+
+// Mobile: xếp dọc gọn gàng
+.mobile-view .sitetor-cat-filters {
+  .scf-group input[type="number"] {
+    width: 60px;
+  }
+}

@@ -1,0 +1,14 @@
+en:
+  theme_metadata:
+    description: "Thanh filter BĐS (Loại, Vị trí, Giá/Ngân sách, Mặt tiền, Diện tích, Hướng) sau breadcrumb cho category type Listing/Mapping"
+  scf:
+    loai: "Loại BĐS"
+    vi_tri: "Vị trí"
+    gia: "Giá (triệu)"
+    ngan_sach: "Ngân sách (triệu)"
+    mat_tien: "Mặt tiền (m)"
+    dien_tich: "Diện tích (m²)"
+    huong: "Hướng"
+    tat_ca: "Tất cả"
+    loc: "Lọc"
+    xoa: "Xóa lọc"

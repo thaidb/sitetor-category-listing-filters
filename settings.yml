@@ -1,0 +1,10 @@
+listing_category_ids:
+  type: list
+  list_type: compact
+  default: "4033"
+  description: "Cây category type Listing — thanh filter hiện với nhãn Giá"
+mapping_category_ids:
+  type: list
+  list_type: compact
+  default: "4034"
+  description: "Cây category type Mapping — thanh filter hiện với nhãn Ngân sách"

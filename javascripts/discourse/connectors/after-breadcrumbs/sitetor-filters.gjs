@@ -13,13 +13,18 @@ import { i18n } from "discourse-i18n";
 // Thanh filter BĐS sau breadcrumb — chỉ hiện trong cây category Listing/Mapping.
 // Giá trị đẩy vào query param của discovery route; backend plugin sitetor-listing
 // (TopicQuery custom filters) lọc server-side nên phân trang/đếm đều đúng.
+// đồng bộ đơn vị với trang /listing (controllers/listing.js của plugin)
+const PRICE_UNITS = { million: 1e6, billion: 1e9 };
+
 export default class SitetorFilters extends Component {
   @service router;
+  @service siteSettings;
 
   @tracked facets = null;
   @tracked type = "";
   @tracked position = "";
   @tracked direction = "";
+  @tracked priceUnit = "million";
   @tracked priceMin = "";
   @tracked priceMax = "";
   @tracked frontageMin = "";
@@ -43,8 +48,12 @@ export default class SitetorFilters extends Component {
     this.type = qp.type || "";
     this.position = qp.position || "";
     this.direction = qp.direction || "";
-    this.priceMin = qp.price_min ? String(Number(qp.price_min) / 1e6) : "";
-    this.priceMax = qp.price_max ? String(Number(qp.price_max) / 1e6) : "";
+    // suy đơn vị hiển thị từ độ lớn giá trên URL (VND): >= 1 tỷ → tỷ, còn lại triệu
+    const raw = Number(qp.price_min || qp.price_max || 0);
+    this.priceUnit = raw >= 1e9 ? "billion" : "million";
+    const div = PRICE_UNITS[this.priceUnit];
+    this.priceMin = qp.price_min ? String(Number(qp.price_min) / div) : "";
+    this.priceMax = qp.price_max ? String(Number(qp.price_max) / div) : "";
     this.frontageMin = qp.frontage_min || "";
     this.frontageMax = qp.frontage_max || "";
     this.areaMin = qp.area_min || "";
@@ -95,11 +104,20 @@ export default class SitetorFilters extends Component {
     this[field] = event.target.value;
   }
 
+  get priceMultiplier() {
+    if (this.priceUnit === "usd") {
+      return this.siteSettings.sitetor_listing_usd_rate || 26000;
+    }
+    return PRICE_UNITS[this.priceUnit] || 1e6;
+  }
+
   @action
   apply() {
     const v = (x) => (x === "" || x === null || x === undefined ? null : x);
     const trieu = (x) =>
-      x === "" || x === null ? null : String(Math.round(Number(x) * 1e6));
+      x === "" || x === null
+        ? null
+        : String(Math.round(Number(x) * this.priceMultiplier));
     this.router.transitionTo({
       queryParams: {
         type: v(this.type),
@@ -120,6 +138,7 @@ export default class SitetorFilters extends Component {
     this.type = "";
     this.position = "";
     this.direction = "";
+    this.priceUnit = "million";
     this.priceMin = "";
     this.priceMax = "";
     this.frontageMin = "";
@@ -161,6 +180,20 @@ export default class SitetorFilters extends Component {
           <Input @value={{this.priceMin}} @type="number" placeholder="min" />
           <span>–</span>
           <Input @value={{this.priceMax}} @type="number" placeholder="max" />
+          <select
+            class="scf-select scf-unit"
+            {{on "change" (fn this.setSelect "priceUnit")}}
+          >
+            <option value="million" selected={{eq this.priceUnit "million"}}>
+              {{i18n (themePrefix "scf.trieu")}}
+            </option>
+            <option value="billion" selected={{eq this.priceUnit "billion"}}>
+              {{i18n (themePrefix "scf.ty")}}
+            </option>
+            <option value="usd" selected={{eq this.priceUnit "usd"}}>
+              USD
+            </option>
+          </select>
         </span>
 
         <span class="scf-group">

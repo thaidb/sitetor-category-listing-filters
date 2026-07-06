@@ -4,8 +4,10 @@ en:
   scf:
     loai: "Loại BĐS"
     vi_tri: "Vị trí"
-    gia: "Giá (triệu)"
-    ngan_sach: "Ngân sách (triệu)"
+    gia: "Giá"
+    ngan_sach: "Ngân sách"
+    trieu: "triệu"
+    ty: "tỷ"
     mat_tien: "Mặt tiền (m)"
     dien_tich: "Diện tích (m²)"
     huong: "Hướng"

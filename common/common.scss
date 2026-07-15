@@ -1,4 +1,6 @@
-// Thanh filter nối tiếp breadcrumb, trước navigation-bar
+// ============================================================
+// Thanh filter nối tiếp breadcrumb (dùng chung Listing + Mapping)
+// ============================================================
 .sitetor-cat-filters {
   display: flex;
   flex-wrap: wrap;
@@ -49,9 +51,452 @@
   }
 }
 
+// Thanh filter đầy đủ (Listing): 2 hàng nhóm như trang /listing
+.sitetor-cat-filters.scf-full {
+  flex-direction: column;
+  align-items: stretch;
+
+  .scf-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scf-q {
+    flex: 1 1 220px;
+
+    input {
+      width: 100%;
+      margin: 0;
+      padding: 4px 8px;
+    }
+  }
+}
+
 // Mobile: xếp dọc gọn gàng
 .mobile-view .sitetor-cat-filters {
   .scf-group input[type="number"] {
     width: 60px;
+  }
+}
+
+// ============================================================
+// Multi-select dropdown (bản sao pattern plugin sitetor-listing)
+// ============================================================
+.listing-ms {
+  position: relative;
+
+  summary {
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px 10px;
+    background: var(--secondary);
+    border: 1px solid var(--primary-low-mid);
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: var(--font-down-1);
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  .listing-ms-count {
+    background: var(--tertiary);
+    color: var(--secondary);
+    border-radius: 8px;
+    padding: 0 6px;
+    font-size: var(--font-down-2);
+  }
+
+  .listing-ms-caret {
+    color: var(--primary-medium);
+    font-size: var(--font-down-2);
+  }
+
+  .listing-ms-panel {
+    position: absolute;
+    z-index: z("dropdown");
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 230px;
+    max-height: 320px;
+    overflow: auto;
+    background: var(--secondary);
+    border: 1px solid var(--primary-low-mid);
+    border-radius: 6px;
+    box-shadow: var(--shadow-dropdown);
+    padding: 6px;
+  }
+
+  .listing-ms-search {
+    width: 100%;
+    margin: 0 0 6px;
+    padding: 4px 6px;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 3px 4px;
+    cursor: pointer;
+    border-radius: 4px;
+
+    &:hover {
+      background: var(--primary-very-low);
+    }
+
+    input[type="checkbox"] {
+      margin: 0;
+    }
+  }
+
+  .listing-ms-value {
+    flex: 1;
+  }
+
+  .listing-ms-c {
+    color: var(--primary-medium);
+    font-size: var(--font-down-2);
+  }
+
+  .listing-ms-empty {
+    color: var(--primary-medium);
+    padding: 4px;
+  }
+}
+
+// ============================================================
+// Khu kết quả tuỳ biến (outlet discovery-list-container-top)
+// ============================================================
+.scf-results {
+  display: block;
+  margin: 4px 0 12px;
+}
+
+.scf-results-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 4px 0 10px;
+}
+
+.scf-total {
+  color: var(--primary-high);
+  font-size: var(--font-down-1);
+}
+
+// Toggle 3 chế độ: Bảng / Thẻ / Danh sách gốc
+.scf-view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--primary-low-mid);
+  border-radius: 6px;
+  overflow: hidden;
+
+  .scf-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 0;
+    margin: 0;
+    padding: 6px 12px;
+    background: var(--secondary);
+    color: var(--primary-high);
+    font-size: var(--font-down-1);
+    cursor: pointer;
+
+    + .scf-view-btn {
+      border-left: 1px solid var(--primary-low-mid);
+    }
+
+    .d-icon {
+      color: currentColor;
+    }
+
+    &:hover {
+      background: var(--primary-very-low);
+    }
+
+    &.active {
+      background: var(--tertiary);
+      color: var(--secondary);
+    }
+  }
+}
+
+.scf-loading {
+  padding: 30px 0;
+  text-align: center;
+}
+
+.scf-empty {
+  padding: 20px 0;
+  color: var(--primary-medium);
+}
+
+// ---------- chế độ Bảng ----------
+.scf-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.scf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-down-1);
+
+  th,
+  td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--primary-low);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  th {
+    background: var(--primary-very-low);
+    color: var(--primary-high);
+    font-weight: 700;
+  }
+
+  tbody tr:hover {
+    background: var(--primary-very-low);
+  }
+
+  .scf-num {
+    text-align: right;
+  }
+
+  .scf-price {
+    color: var(--danger);
+    font-weight: 700;
+  }
+}
+
+// ---------- chế độ Thẻ (card grid kiểu batdongsan) ----------
+.scf-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.scf-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--secondary);
+  border: 1px solid var(--primary-low);
+  border-radius: 8px;
+  overflow: hidden;
+  color: var(--primary);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    color: var(--primary);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+  }
+}
+
+.scf-card-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--primary-very-low);
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .d-icon {
+    color: var(--primary-low-mid);
+  }
+
+  .scf-card-type {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    max-width: calc(100% - 16px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    font-size: var(--font-down-2);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  // 95% tin KHÔNG có ảnh → strip gọn: badge Loại bên trái, icon mờ bên phải
+  &.no-image {
+    aspect-ratio: auto;
+    height: 40px;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--primary-low);
+
+    .scf-card-type {
+      position: static;
+      background: var(--tertiary-low);
+      color: var(--tertiary);
+    }
+  }
+}
+
+.scf-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px 12px;
+}
+
+// giá lớn màu đỏ dẫn đầu (nhiều tin không có ảnh)
+.scf-card-price {
+  color: var(--danger);
+  font-size: var(--font-up-1);
+  font-weight: 700;
+  line-height: 1.3;
+
+  .scf-card-ppm {
+    color: var(--primary-medium);
+    font-size: var(--font-down-1);
+    font-weight: 400;
+  }
+}
+
+.scf-card-title {
+  margin: 0;
+  font-size: var(--font-0);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.scf-card-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: var(--font-down-1);
+  color: var(--primary-high);
+
+  span + span {
+    position: relative;
+
+    &::before {
+      content: "·";
+      position: absolute;
+      left: -7px;
+      color: var(--primary-low-mid);
+    }
+  }
+}
+
+.scf-card-addr {
+  font-size: var(--font-down-1);
+  color: var(--primary-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ---------- phân trang ----------
+.scf-paging {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 14px 0 4px;
+
+  .scf-page-list {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .scf-page {
+    margin: 0;
+    padding: 4px 9px;
+    border: 1px solid var(--primary-low-mid);
+    border-radius: 4px;
+    background: var(--secondary);
+    color: var(--primary-high);
+    cursor: pointer;
+    font-size: var(--font-down-1);
+
+    &:hover {
+      background: var(--primary-very-low);
+    }
+  }
+
+  .scf-page-current {
+    background: var(--tertiary);
+    border-color: var(--tertiary);
+    color: var(--secondary);
+    cursor: default;
+  }
+
+  .scf-goto {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    font-size: var(--font-down-1);
+    color: var(--primary-high);
+
+    input[type="number"] {
+      width: 64px;
+      margin: 0;
+      padding: 4px 6px;
+    }
+  }
+}
+
+// ============================================================
+// Ẩn topic list gốc khi khu kết quả đang ở chế độ Bảng/Thẻ.
+// Class do lib/listing-store.js gắn vào <body>, chỉ khi component kết quả
+// đang mounted trên trang category thuộc cây Listing (gỡ khi rời trang
+// hoặc chuyển sang chế độ "Danh sách gốc").
+// ============================================================
+body.sitetor-hide-native-list #list-area {
+  .topic-list,
+  .topic-list-bottom,
+  footer.topic-list-bottom,
+  .footer-message {
+    display: none;
   }
 }

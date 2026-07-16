@@ -7,23 +7,23 @@ mapping_category_ids:
   type: list
   list_type: compact
   default: "4034"
-  description: "Cây category type Mapping — filter group-tag đa menu + khu kết quả Bảng/Thẻ"
+  description: "Cây category type Mapping — thanh filter đơn giản (Ngân sách) + filter group-tag trong breadcrumb, khu kết quả Bảng/Thẻ giống Listing"
 mapping_group_purpose:
   type: list
   default: "Để-ở|Kinh-doanh|Đầu-tư"
-  description: "Tag nhóm Nhu cầu (purpose) — vocab cho menu filter + cột bảng Mapping"
+  description: "Tag nhóm Nhu cầu (purpose) — vocab menu filter group-tag trong breadcrumb Mapping"
 mapping_group_position:
   type: list
   default: "Hẻm|Khu-compound|Mặt-tiền|Ngõ|Nội-bộ"
-  description: "Tag nhóm Vị trí (position) — vocab cho menu filter + cột bảng Mapping"
+  description: "Tag nhóm Vị trí (position) — vocab menu filter group-tag trong breadcrumb Mapping"
 mapping_group_compass:
   type: list
   default: "Đông|Tây|Nam|Bắc|Đông-Bắc|Đông-Nam|Tây-Bắc"
-  description: "Tag nhóm Hướng (compass) — vocab cho menu filter + cột bảng Mapping"
+  description: "Tag nhóm Hướng (compass) — vocab menu filter group-tag trong breadcrumb Mapping"
 mapping_group_corner:
   type: list
   default: "Góc-2-mặt-tiền|Góc-3-mặt-tiền|Góc-4-mặt-tiền"
-  description: "Tag nhóm Góc (corner) — vocab cho menu filter + cột bảng Mapping"
+  description: "Tag nhóm Góc (corner) — vocab menu filter group-tag trong breadcrumb Mapping"
 mapping_group_industry:
   type: list
   default: "24h|Anh-ngữ|Cafe|Cà-phê|Cây-xăng|Chuỗi|Cửa-hàng-thực-phẩm|Điện-thoại|Game|Giải-trí|Giao-hàng|Giặt-ủi|Giày-dép|Gym|Hầm-rựu|Karaoke|Mắt-kính|Ngân-hàng|Nhà-hàng|Nha-khoa|Nhà-sách|Nhà-thuốc|Nội-thất|Phòng-công-chứng|Phòng-khám|Phòng-thu|Pizza|Quán-ăn|Quán-nhậu|Salon|Sang|Showroom|Siêu-thị|Spa|Thời-trang|Thức-ăn-nhanh|Tiệm-net|Trái-cây|Trang-sức|Trà-sữa|Trường-học|Vàng-bạc-đá-quý|Văn-phòng|Xe-hơi|Xe-máy|Xì-gà"

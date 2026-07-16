@@ -3,12 +3,29 @@ import { ajax } from "discourse/lib/ajax";
 
 // Store dùng chung giữa thanh filter (connector after-breadcrumbs) và khu
 // kết quả tuỳ biến (connector discovery-list-container-top) trên trang
-// category type Listing. Tự quản lý state + fetch /listing/filter.json
-// (không đi qua query param của discovery route).
+// category type Listing VÀ Mapping — cùng fetch /listing/filter.json:
+// - mode "listing": tự quản lý input filter (không đi qua query param).
+// - mode "mapping": param custom field đọc từ URL query param (do
+//   mapping-filters-legacy đặt qua router.transitionTo) + tags=<csv> từ
+//   filter group-tag trong breadcrumb — hai nguồn kết hợp AND trong một fetch.
 
 const PRICE_UNITS = { million: 1e6, billion: 1e9 };
 const VIEW_KEY = "sitetor-clf-view-mode";
 const VIEW_MODES = ["table", "cards", "native"];
+
+// param custom field trên URL (whitelist trùng api-initializer +
+// TopicQuery.add_custom_filter của plugin sitetor-listing)
+const URL_FILTER_PARAMS = [
+  "type",
+  "position",
+  "direction",
+  "price_min",
+  "price_max",
+  "frontage_min",
+  "frontage_max",
+  "area_min",
+  "area_max",
+];
 
 export function inCategoryTree(csv, category) {
   const ids = (csv || "")
@@ -36,6 +53,7 @@ function readViewMode() {
 
 class ListingStore {
   @tracked categoryId = null;
+  mode = "listing"; // "listing" | "mapping"
 
   // input tạm — chỉ áp vào appliedParams khi bấm Lọc (mirror controllers/listing.js)
   @tracked fQ = "";
@@ -55,8 +73,11 @@ class ListingStore {
   @tracked sWards = [];
   @tracked sStreets = [];
 
-  // filter đã áp dụng — giữ nguyên khi chuyển trang
+  // filter đã áp dụng — giữ nguyên khi chuyển trang (mode listing)
   appliedParams = {};
+
+  // group-tag đã áp dụng (mode mapping) — filter breadcrumb set qua setTags()
+  @tracked tags = [];
 
   // kết quả từ /listing/filter.json
   @tracked topics = [];
@@ -75,6 +96,7 @@ class ListingStore {
   resultsActive = false;
   #facetsRequested = false;
   #fetchSeq = 0;
+  #lastUrlKey = null;
 
   get totalPages() {
     return Math.max(1, Math.ceil(this.total / this.perPage));
@@ -164,6 +186,25 @@ class ListingStore {
     };
   }
 
+  // param custom field hiện có trên URL (mode mapping — do
+  // mapping-filters-legacy đặt qua router.transitionTo)
+  readUrlFilterParams() {
+    const out = {};
+    const qp = new URLSearchParams(window.location.search);
+    for (const k of URL_FILTER_PARAMS) {
+      const v = qp.get(k);
+      if (v !== null && v !== "") {
+        out[k] = v;
+      }
+    }
+    return out;
+  }
+
+  #urlFilterKey() {
+    const p = this.readUrlFilterParams();
+    return URL_FILTER_PARAMS.map((k) => `${k}=${p[k] ?? ""}`).join("&");
+  }
+
   async fetchResults() {
     if (!this.categoryId) {
       return;
@@ -171,9 +212,18 @@ class ListingStore {
     const seq = ++this.#fetchSeq;
     this.loading = true;
     const data = { category_id: this.categoryId, page: this.page };
-    for (const [k, v] of Object.entries(this.appliedParams)) {
-      if (v !== null && v !== undefined && v !== "") {
-        data[k] = v;
+    if (this.mode === "mapping") {
+      // custom field từ URL (filter legacy) + tags từ filter breadcrumb — AND
+      Object.assign(data, this.readUrlFilterParams());
+      this.#lastUrlKey = this.#urlFilterKey();
+      if (this.tags.length) {
+        data.tags = this.tags.join(",");
+      }
+    } else {
+      for (const [k, v] of Object.entries(this.appliedParams)) {
+        if (v !== null && v !== undefined && v !== "") {
+          data[k] = v;
+        }
       }
     }
     try {
@@ -216,6 +266,28 @@ class ListingStore {
       this.setViewMode("table");
     }
     this.fetchResults();
+  }
+
+  // filter group-tag (breadcrumb, mode mapping) bấm Lọc/Xóa lọc
+  setTags(tags) {
+    this.tags = tags || [];
+    this.page = 0;
+    if (this.viewMode === "native") {
+      this.setViewMode("table");
+    }
+    this.fetchResults();
+  }
+
+  // mode mapping: filter legacy đổi query param URL (routeDidChange) →
+  // refetch nếu bộ param custom field thực sự thay đổi
+  maybeRefetchFromUrl() {
+    if (this.mode !== "mapping" || !this.resultsActive) {
+      return;
+    }
+    if (this.#urlFilterKey() !== this.#lastUrlKey) {
+      this.page = 0;
+      this.fetchResults();
+    }
   }
 
   reset() {
@@ -275,16 +347,19 @@ class ListingStore {
 
   // khu kết quả xuất hiện trên trang category → ẩn topic list gốc khi
   // đang ở chế độ Bảng/Thẻ
-  activate(categoryId) {
-    const changed = this.categoryId !== categoryId;
+  activate(categoryId, mode = "listing") {
+    const changed = this.categoryId !== categoryId || this.mode !== mode;
     this.categoryId = categoryId;
+    this.mode = mode;
     this.resultsActive = true;
     this.syncBodyClass();
     if (changed || !this.loaded) {
       this.page = 0;
       this.fetchResults();
     }
-    this.ensureFacets();
+    if (mode === "listing") {
+      this.ensureFacets();
+    }
   }
 
   deactivate() {

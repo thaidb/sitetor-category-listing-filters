@@ -1,6 +1,6 @@
 en:
   theme_metadata:
-    description: "Thanh filter BĐS đầy đủ + khu kết quả Bảng/Thẻ/Danh sách gốc cho category type Listing; filter group-tag đa menu (Nhu cầu/Ngành nghề/Vị trí/Hướng/Góc) + khu kết quả Bảng/Thẻ/Nhóm theo cho category type Mapping"
+    description: "Thanh filter BĐS đầy đủ + khu kết quả Bảng/Thẻ/Danh sách gốc cho category type Listing; category type Mapping giữ thanh filter đơn giản (Ngân sách) + filter group-tag trong breadcrumb (Nhu cầu/Ngành nghề/Vị trí/Hướng/Góc), khu kết quả giống Listing"
   scf:
     loai: "Loại BĐS"
     vi_tri: "Vị trí"
@@ -41,17 +41,7 @@ en:
     mt: "MT"
     mapping:
       purpose: "Nhu cầu"
-      purpose_short: "Nhu cầu"
       industry: "Ngành nghề"
-      industry_short: "Ngành"
       position: "Vị trí"
-      position_short: "Vị trí"
       compass: "Hướng"
-      compass_short: "Hướng"
       corner: "Góc"
-      corner_short: "Góc"
-      title_col: "Tiêu đề"
-      group_by: "Nhóm theo"
-      group_none: "Không nhóm"
-      other: "Khác"
-      page_info: "Trang %{page} · %{count} tin"

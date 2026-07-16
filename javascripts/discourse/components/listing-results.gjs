@@ -3,6 +3,7 @@ import { Input } from "@ember/component";
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
+import { service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
 import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import { eq } from "truth-helpers";
@@ -11,12 +12,16 @@ import icon from "discourse/helpers/d-icon";
 import { i18n } from "discourse-i18n";
 import store from "../lib/listing-store";
 
-// Khu kết quả tuỳ biến trên trang category type Listing (outlet
-// discovery-list-container-top). 3 chế độ xem (persist localStorage):
+// Khu kết quả tuỳ biến trên trang category type Listing và Mapping (outlet
+// discovery-list-container-top), cùng /listing/filter.json. 3 chế độ xem
+// (persist localStorage):
 //   Bảng (mặc định) — bảng như /listing
 //   Thẻ — grid card kiểu batdongsan (có ảnh, degrade đẹp khi thiếu ảnh)
 //   Danh sách gốc — ẩn khu này, hiện lại topic list gốc của Discourse
 // Chế độ Bảng/Thẻ ẩn topic list gốc qua body.sitetor-hide-native-list (scss).
+// @mode "mapping": filter legacy đặt param custom field lên URL query param
+// → nghe routeDidChange để refetch khi bộ param đổi (kết hợp với store.tags
+// do filter group-tag trong breadcrumb đặt).
 
 // 25000000 → "25 tr" ; 5500000000 → "5,5 tỷ"
 function formatPrice(vnd) {
@@ -59,24 +64,34 @@ function orDash(v) {
 }
 
 export default class ListingResults extends Component {
+  @service router;
+
   store = store;
 
   @tracked gotoValue = "";
 
   constructor() {
     super(...arguments);
-    store.activate(this.args.categoryId);
+    store.activate(this.args.categoryId, this.args.mode || "listing");
+    this.router.on("routeDidChange", this.onRouteDidChange);
   }
 
   willDestroy() {
     super.willDestroy(...arguments);
+    this.router.off("routeDidChange", this.onRouteDidChange);
     store.deactivate();
   }
 
+  // mode mapping: filter legacy transitionTo đổi query param → refetch
+  // (store tự bỏ qua nếu không phải mapping hoặc param không đổi)
+  onRouteDidChange = () => {
+    store.maybeRefetchFromUrl();
+  };
+
   @action
   onCategoryChange() {
-    // đổi category trong cùng cây Listing mà component không bị destroy
-    store.activate(this.args.categoryId);
+    // đổi category trong cùng cây Listing/Mapping mà component không bị destroy
+    store.activate(this.args.categoryId, this.args.mode || "listing");
   }
 
   @action
@@ -116,7 +131,7 @@ export default class ListingResults extends Component {
   <template>
     <div
       class="scf-results"
-      {{didUpdate this.onCategoryChange @categoryId}}
+      {{didUpdate this.onCategoryChange @categoryId @mode}}
     >
       <div class="scf-results-head">
         <div class="scf-view-toggle">

@@ -1,18 +1,19 @@
 import Component from "@glimmer/component";
 import { fn } from "@ember/helper";
 import { action } from "@ember/object";
-import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import DButton from "discourse/components/d-button";
 import { i18n } from "discourse-i18n";
 import store, { groupVocab } from "../lib/mapping-store";
 import ListingMultiSelect from "./listing-multi-select";
 
-// Filter group-tag đa menu cho cây category Mapping (after-breadcrumbs).
+// Filter group-tag cho cây category Mapping — render NGAY TRONG breadcrumb
+// (connectors/bread-crumbs-right, nối tiếp Home › Mapping › …), kiểu pill gọn.
 // 5 nhóm (vocab từ settings mapping_group_*): Nhu cầu (purpose) · Ngành nghề
 // (industry, chỉ hiện khi Nhu cầu có Kinh-doanh) · Vị trí (position) · Hướng
-// (compass) · Góc (corner). Bấm Lọc → store.apply() gộp tag mọi nhóm thành
-// tags[] + match_all_tags=true (giao AND), đổ vào khu kết quả
-// (components/mapping-results.gjs).
+// (compass) · Góc (corner). Bấm Lọc → store.apply() đẩy hợp tag vào
+// listing-store.tags → khu kết quả (listing-results) refetch
+// /listing/filter.json?tags=<csv> (AND với param custom field của filter
+// legacy trên URL). Xóa lọc → clear tags.
 
 function toOptions(key) {
   return groupVocab(key).map((v) => ({ value: v }));
@@ -27,17 +28,6 @@ export default class MappingGroupFilter extends Component {
   positionOptions = toOptions("position");
   compassOptions = toOptions("compass");
   cornerOptions = toOptions("corner");
-
-  constructor() {
-    super(...arguments);
-    store.setCategory(this.args.category);
-  }
-
-  @action
-  onCategoryChange() {
-    // đổi category trong cùng cây Mapping mà component không bị destroy
-    store.setCategory(this.args.category);
-  }
 
   @action
   setSelection(key, values) {
@@ -55,10 +45,7 @@ export default class MappingGroupFilter extends Component {
   }
 
   <template>
-    <div
-      class="sitetor-cat-filters scf-mapping-filter"
-      {{didUpdate this.onCategoryChange @category}}
-    >
+    <span class="scf-breadcrumb-group-filter">
       <ListingMultiSelect
         @label={{i18n (themePrefix "scf.mapping.purpose")}}
         @options={{this.purposeOptions}}
@@ -107,6 +94,6 @@ export default class MappingGroupFilter extends Component {
         @translatedLabel={{i18n (themePrefix "scf.xoa")}}
         class="scf-btn"
       />
-    </div>
+    </span>
   </template>
 }

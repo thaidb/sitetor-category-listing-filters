@@ -487,148 +487,36 @@
 }
 
 // ============================================================
-// Mapping: filter group-tag + khu kết quả (chip tag, nhóm theo section)
+// Mapping: filter group-tag TRONG breadcrumb (outlet bread-crumbs-right —
+// li nối tiếp trong <ol class="category-breadcrumb">) — pill/dropdown gọn
 // ============================================================
-
-// selector "Nhóm theo" trên đầu khu kết quả
-.scf-groupby {
+.category-breadcrumb .scf-breadcrumb-group-filter {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  margin: 0;
-  font-weight: 600;
-  font-size: var(--font-down-1);
-  color: var(--primary-high);
-  white-space: nowrap;
 
-  .scf-select {
-    margin: 0;
-    padding: 4px 8px;
-    background: var(--secondary);
-    border: 1px solid var(--primary-low-mid);
-    border-radius: 4px;
+  .listing-ms summary {
+    padding: 3px 10px;
+    border-radius: 14px; // pill khớp chiều cao hàng breadcrumb
   }
-}
 
-// chip tag — màu theo nhóm (purpose/industry/position/compass/corner)
-.scf-chip {
-  display: inline-block;
-  margin: 1px 4px 1px 0;
-  padding: 1px 8px;
-  border-radius: 10px;
-  background: var(--primary-low);
-  color: var(--primary-high);
-  font-size: var(--font-down-2);
-  line-height: 1.6;
-  white-space: nowrap;
-}
-
-.scf-chip-purpose {
-  background: var(--tertiary-low);
-  color: var(--tertiary);
-}
-
-.scf-chip-industry {
-  background: var(--success-low);
-  color: var(--success);
-}
-
-.scf-chip-position {
-  background: var(--highlight-low);
-  color: var(--primary-high);
-}
-
-.scf-chip-compass {
-  background: var(--love-low);
-  color: var(--love);
-}
-
-.scf-chip-corner {
-  background: var(--danger-low);
-  color: var(--danger);
-}
-
-// tiêu đề section khi "Nhóm theo" một nhóm tag
-.scf-section-title {
-  margin: 18px 0 8px;
-  padding: 6px 10px;
-  background: var(--primary-very-low);
-  border-left: 3px solid var(--tertiary);
-  border-radius: 0 4px 4px 0;
-  font-size: var(--font-0);
-  font-weight: 700;
-  color: var(--primary-high);
-
-  .scf-section-count {
-    color: var(--primary-medium);
-    font-weight: 400;
+  .scf-btn {
+    padding: 3px 10px;
+    border-radius: 14px;
     font-size: var(--font-down-1);
   }
 }
 
-// bảng Mapping: cột chip được xuống dòng, cột Tiêu đề chiếm chỗ chính
-.scf-table.scf-mapping-table {
-  th,
-  td {
-    white-space: normal;
-    vertical-align: top;
-  }
-
-  .scf-map-title {
-    min-width: 220px;
-
-    a {
-      font-weight: 600;
-      color: var(--primary);
-
-      &:hover {
-        color: var(--tertiary);
-      }
-    }
-  }
-
-  .scf-map-cell {
-    min-width: 90px;
-  }
-
-  .scf-map-none {
-    color: var(--primary-low-mid);
-  }
+// li rỗng do plugin outlet tạo trên category ngoài cây Mapping → không chừa chỗ
+.category-breadcrumb li:empty {
+  display: none;
 }
 
-// thẻ Mapping: tiêu đề + chip tag theo nhóm (không có ảnh/giá như Listing)
-.scf-map-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px 14px;
-  background: var(--secondary);
-  border: 1px solid var(--primary-low);
-  border-radius: 8px;
-  color: var(--primary);
-  transition: box-shadow 0.15s ease, transform 0.15s ease;
-
-  &:hover {
-    color: var(--primary);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-    transform: translateY(-1px);
-  }
-
-  .scf-map-card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2px;
-  }
-}
-
-// mobile: bảng mapping cuộn ngang (kế thừa .scf-table-wrap), head xếp dọc
-.mobile-view .scf-mapping-results .scf-results-head {
-  flex-direction: column;
-  align-items: stretch;
-
-  .scf-groupby {
-    justify-content: space-between;
-  }
+// mobile: filter breadcrumb xuống dòng, chiếm cả hàng
+.mobile-view .category-breadcrumb .scf-breadcrumb-group-filter {
+  width: 100%;
+  margin-top: 4px;
 }
 
 // ============================================================
